@@ -433,7 +433,6 @@ private fun LogSheet(
                     val fraction       = (logsScrollState.value.toFloat() / logsScrollState.maxValue.toFloat()).coerceIn(0f, 1f)
                     val thumbPx        = (trackPx * 0.35f).coerceAtLeast(thumbMinPx)
                     val thumbTopPx     = fraction * (trackPx - thumbPx)
-                    val isDark         = isSystemInDarkTheme()
                     val thumbColor     = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
                     val trackColor     = MaterialTheme.colorScheme.surfaceContainerHighest
 

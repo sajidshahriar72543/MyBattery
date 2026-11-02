@@ -28,8 +28,8 @@ fun RescanPullToRefreshBox(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val blueColor = if (isSystemInDarkTheme()) AccentBlue else AccentBlueLight
-    val state     = rememberPullToRefreshState()
+    val accent = MaterialTheme.colorScheme.primary
+    val state  = rememberPullToRefreshState()
     PullToRefreshBox(
         isRefreshing = false,
         onRefresh    = onRescan,
@@ -40,7 +40,7 @@ fun RescanPullToRefreshBox(
                 state        = state,
                 isRefreshing = false,
                 modifier     = Modifier.align(Alignment.TopCenter),
-                color        = blueColor
+                color        = accent
             )
         },
         content = content
