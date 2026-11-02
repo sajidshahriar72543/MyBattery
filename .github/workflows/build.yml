@@ -44,3 +44,43 @@ jobs:
         with:
           name: MyBattery-release-apk-unsigned
           path: app/build/outputs/apk/release/*.apk
+
+  release:
+    # Only run when a v* tag is pushed
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write          # required to create a release
+    steps:
+      - name: Download Debug APK
+        uses: actions/download-artifact@v4
+        with:
+          name: MyBattery-debug-apk
+          path: apks/debug
+
+      - name: Download Release APK
+        uses: actions/download-artifact@v4
+        with:
+          name: MyBattery-release-apk-unsigned
+          path: apks/release
+
+      - name: Rename APKs with tag
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          DEBUG_APK=$(find apks/debug  -name '*.apk' | head -n1)
+          REL_APK=$(find apks/release -name '*.apk' | head -n1)
+          cp "$DEBUG_APK" "MyBattery-${TAG}-debug.apk"
+          cp "$REL_APK"   "MyBattery-${TAG}-release-unsigned.apk"
+          ls -lh *.apk
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MyBattery ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            MyBattery-${{ github.ref_name }}-debug.apk
+            MyBattery-${{ github.ref_name }}-release-unsigned.apk
